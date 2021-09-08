@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="memberMapper">
+
+	<select id="login" resultMap="MemberResultSet">
+		select *
+		from member
+		where id=#{id} and MEMBER_STATUS='Y'
+	</select>
+	<!--  암호화  로그인 : 조건찾기  id-o ,pwd-x ( servlet에서 matches 통해 pwd 식별  )-->
+	<resultMap type="Member" id="MemberResultSet">
+		<id column="ID" property="id"/>
+		<result column="PWD" property="pwd"/>
+		<result column="NAME" property="name"/>
+		<result column="NICKNAME" property="nickName"/>
+		<result column="EMAIL" property="email"/>
+		<result column="GENDER" property="gender"/>
+		<result column="AGE" property="age"/>
+		<result column="PHONE" property="phone"/>
+		<result column="BIRTHDAY" property="birthDay"/>
+		<result column="ADDRESS" property="address"/>
+		<result column="ENROLL_DATE" property="enrollDate"/>
+		<result column="UPDATE_DATE" property="updateDate"/>
+		<result column="MEMBER_STATUS" property="memberStatus"/>
+	</resultMap>
+	
+	<insert id="enroll">
+		insert into member
+		values(#{id},#{pwd},#{name},#{nickName},#{email},#{gender},#{age},#{phone},
+				#{birthDay},#{address}, sysdate, sysdate , default)
+	</insert>
+	
+	
+	<update id="updateMember">
+		update member 
+		set name=#{name}, nickname=#{nickName}, email=#{email}, gender=#{gender}, age=#{age}, 
+				phone=#{phone},	address=#{address}, update_date=sysdate
+		where id=#{id}
+	</update>
+	
+	<update id="updatePwd" parameterType="hashmap">
+		update member
+		set pwd=#{newPwd}
+		where id=#{userId}
+	</update>
+	
+	<update id="deleteMember">
+		update member
+		set MEMBER_STATUS='N'
+		where id=#{Id}
+	</update>
+
+	<select id="checkId" resultType="_int">
+		select count(*)
+		from member
+		where id=#{userId}
+	</select>
+	
+</mapper>
+

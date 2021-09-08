@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="boardMapper">
+
+	<select id="listCount" resultType="_int">
+		select count(*) from board where board_status='Y'
+	</select>
+	
+	<select id="selectList" resultMap="boardResultSet">
+		select board_id, board_title, board_writer, nickname, board_content,
+				original_filename, rename_filename, board_count, board_create_date, board_modify_date, board_status
+		from board
+			 join member on (id=board_writer)
+		where board_status='Y'
+		order by board_id desc
+	</select>
+	<resultMap id="boardResultSet" type="Board">
+		<id column="BOARD_ID" property="boardId"/>
+		<result column="BOARD_TITLE" property="boardTitle"/>
+		<result column="BOARD_WRITER" property="boardWriter"/>
+		<result column="NICKNAME" property="nickName"/>
+		<result column="BOARD_CONTENT" property="boardContent"/>
+		<result column="ORIGINAL_FILENAME" property="originalFileName"/>
+		<result column="RENAME_FILENAME" property="renameFileName"/>
+		<result column="BOARD_COUNT" property="boardCount"/>
+		<result column="BOARD_CREATE_DATE" property="boardCreateDate"/>
+		<result column="BOARD_MODIFY_DATE" property="boardModifyDate"/>
+		<result column="BOARD_STATUS" property="boardStatus"/>
+	</resultMap>
+	
+	
+	<insert id="insertBoard">
+		insert into board
+		values(seq_bid.nextval, #{boardTitle}, #{boardWriter}, #{boardContent},
+			#{originalFileName}, #{renameFileName}, default, sysdate, sysdate, default)
+	</insert>
+
+
+	<update id="addReadCount">
+		update board set board_count=board_count+1 where board_id=#{boardId}
+	</update>
+  	
+  	<select id="selectBoard" resultMap="boardResultSet">
+  		select board_id, board_title, board_writer, nickname, board_content,
+				original_filename, rename_filename, board_count, board_create_date, board_modify_date, board_status
+		from board
+			 join member on (id=board_writer)
+		where board_id=#{boardId} and board_status='Y'
+  	</select>
+  	
+  	
+  	<update id="updateBoard">
+  		update board 
+  		set board_title=#{boardTitle}, board_content=#{boardContent}, board_modify_date=sysdate,
+  			<if test="originalFileName !=null">
+  				original_filename=#{originalFileName},
+  			</if>
+  				rename_filename=#{renameFileName}
+  		where board_id=#{boardId}
+  	</update>
+  	
+  	
+ 	<update id="deleteBoard">
+ 		update board set board_status='N' where board_id=#{boardId}
+ 	</update>
+  	
+  	
+  	<insert id="insertReply">
+  		insert into reply
+  		values(seq_rid.nextval, #{replyContent}, #{refBoardId}, #{replyWriter}, sysdate, sysdate, default)
+  	</insert>
+  	
+  	<select id="selectReplyList" resultMap="ReplyResultSet">
+  		select *
+  		from reply
+  		where REF_BOARD_ID= #{boardId} and reply_status='Y'
+  		order by reply_id desc
+  	</select>
+  	<resultMap type="Reply" id="ReplyResultSet">
+  		<id column="REPLY_ID" property="replyId"/>
+		<result column="REPLY_CONTENT" property="replyContent"/>
+		<result column="REF_BOARD_ID" property="refBoardId"/>
+		<result column="REPLY_WRITER" property="replyWriter"/>
+		<result column="REPLY_CREATE_DATE" property="replyCreateDate"/>
+		<result column="REPLY_MODIFY_DATE" property="replyModifyDate"/>
+		<result column="REPLY_STATUS" property="replyStatus"/>
+  	</resultMap>
+  	
+  	
+  	<!-- 매퍼에서는 부등호가 괄호로 인식됨 -> 태그 인식 X : <![CDATA[ ]]>  ! C DATA -->
+  	<select id="selectTopList" resultMap="boardResultSet">
+  		<![CDATA[ 
+		with topN as( select * 
+					  from board
+					  where board_status='Y'
+					  order by board_count desc )
+		select *
+		from topN
+		where rownum <= 5
+		 ]]>
+  	</select>
+  	
+</mapper>

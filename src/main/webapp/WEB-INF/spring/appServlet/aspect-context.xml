@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop https://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+	<!-- <bean class="com.kh.sharethevision.common.aop.LoggerAspect1" id="loggerAspect"></bean> -->
+ 	<!-- ===========  선언적 AOP ================= -->
+<!-- 	<aop:config>
+		<aop:aspect id="loggerAspect" ref="loggerAspect">
+			<aop:pointcut expression="execution(* com.kh.sharethevision.board..*(..))" id="pcForAll"/>
+			<aop:before method="loggerAdvice" pointcut-ref="pcForAll"/>
+			<aop:around method="loggerAdvice" pointcut-ref="pcForAll"/>
+		</aop:aspect>
+	</aop:config>  -->
+
+
+	<!--============== 프로그래밍적 AOP =================== -->
+	<aop:aspectj-autoproxy />
+
+<!-- 	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="selectBoard" read-only="true"/>
+		</tx:attributes>
+	</tx:advice>
+	<aop:config>
+		<aop:pointcut expression="execution(* com.kh.sharethevision.board..*(..))" id="boardTx"/>
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="boardTx"/>
+	</aop:config> -->
+
+
+
+	<!-- 위처럼 길게 안써도,  @Transactional 어노테이션 한줄로 끝! -->
+
+	<tx:annotation-driven/>
+	<!-- boardServiceImpl -> @Transactional -->
+
+
+</beans>

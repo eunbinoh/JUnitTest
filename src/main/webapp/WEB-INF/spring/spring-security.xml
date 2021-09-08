@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xsi:schemaLocation="http://www.springframework.org/schema/security 
+							http://www.springframework.org/schema/security/spring-security-5.4.xsd 
+							http://www.springframework.org/schema/beans 
+							http://www.springframework.org/schema/beans/spring-beans.xsd" 
+		xmlns:security="http://www.springframework.org/schema/security" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns="http://www.springframework.org/schema/beans">
+
+<!-- pom.xml : mvn 3개(core,web,config) 등록하고, namespaces (하단탭) security 체크하기 -->
+
+
+<bean id="BCryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"> </bean>
+
+</beans>
